@@ -13,8 +13,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
 
+const cookieSession = require('cookie-session');
+app.use(cookieSession({
+  keys: ['user_id']
+}));
+
 // Require my modules
 const urlDatabase = require('./my_modules/url-database.js');
+const users = require('./my_modules/users-database.js');
 const generateRandomString = require('./my_modules/random-stringer.js');
 
 /* ::::::::::::::::::::::::::::: */
