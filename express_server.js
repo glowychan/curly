@@ -10,6 +10,9 @@ app.set("view engine", "ejs");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
+
 // Require my modules
 const urlDatabase = require('./my_modules/url-database.js');
 const generateRandomString = require('./my_modules/random-stringer.js');
@@ -58,3 +61,12 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
+/* ::::::::::::::::::::::::::::: */
+/* :::::: DELETE REQUESTS :::::: */
+/* ::::::::::::::::::::::::::::: */
+
+// Allow server to delete a shorturl from server
+app.delete("/urls/:id", (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect("/urls");
+});

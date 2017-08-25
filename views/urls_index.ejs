@@ -16,7 +16,10 @@
       <td><%= urls[key].longURL %></td>
       <td><%= key %></td>
       <td>
-        <a>Delete</a>
+        <form method="POST" action="/urls/<%= key %>?_method=DELETE">
+          <button type="submit" value="Delete" class="btn btn-link">
+             <i class="fa fa-trash" aria-hidden="true"></i>
+          </button>
     </tr>
     <% } %>
   </table>
