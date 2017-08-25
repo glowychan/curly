@@ -71,7 +71,10 @@ app.post("/login", (req, res) => {
   return;
 });
 
-
+app.post("/logout", (req, res) => {
+  req.session = null;
+  res.redirect("/urls");
+});
 
 // Indicate port for the server to listen on
 app.listen(PORT, () => {
