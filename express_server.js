@@ -31,6 +31,15 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+app.get("/u/:shortURL", (req, res) => {
+  if (!urlDatabase[req.params.shortURL]) {
+    res.send("Invalid link");
+  } else {
+    let longURL = urlDatabase[req.params.shortURL].longURL;
+    res.redirect(longURL);
+  }
+});
+
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id };
   res.render("urls_show", templateVars);
