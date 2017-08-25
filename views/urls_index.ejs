@@ -10,6 +10,7 @@
       <th>Full URL</th>
       <th>Short URL</th>
       <th>Delete</th>
+      <th>Edit</th>
     </tr>
     <tr>
     <% for (var key in urls) { %>
@@ -18,8 +19,11 @@
       <td>
         <form method="POST" action="/urls/<%= key %>?_method=DELETE">
           <button type="submit" value="Delete" class="btn btn-link">
-             <i class="fa fa-trash" aria-hidden="true"></i>
+              <i class="fa fa-trash" aria-hidden="true"></i>
           </button>
+        </form>
+      </td>
+      <td><a href="/urls/<%= key %>" class="btn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
     </tr>
     <% } %>
   </table>
