@@ -1,0 +1,22 @@
+<html lang="en">
+<head>
+  <title>cURLY</title>
+</head>
+<body>
+  <table>
+    <tr>
+      <th>Full URL</th>
+      <th>Short URL</th>
+      <th>Delete</th>
+    </tr>
+    <tr>
+    <% for (var key in urls) { %>
+      <td><%= urls[key].longURL %></td>
+      <td><%= key %></td>
+      <td>
+        <a>Delete</a>
+    </tr>
+    <% } %>
+  </table>
+</body>
+</html>

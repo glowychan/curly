@@ -3,8 +3,13 @@ var app = express();
 var PORT = process.env.PORT || 8080; // default port 8080
 
 var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2" : {
+    longURL: "http://www.lighthouselabs.ca",
+  },
+
+  "9sm5xK" : {
+    longURL: "http://www.google.com",
+  }
 };
 
 app.get("/", (req, res) => {
