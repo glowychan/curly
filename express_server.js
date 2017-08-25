@@ -65,6 +65,14 @@ app.post("/urls", (req, res) => {
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
+app.post("/login", (req, res) => {
+  req.session.user_id = req.params.body;
+  res.send("ok");
+  return;
+});
+
+
+
 // Indicate port for the server to listen on
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
