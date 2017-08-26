@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ./partials/_head %>
+  </head>
+  <body class="container">
+  <h1>TinyApp</h1>
+   <p>Registered users login <a href="/login">here</a>.</p>
+    <form action="/register" method="POST">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input id="email" type="email" name="email" placeholder="Email" style="width: 150px">
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+        <input id="password" type="password" name="password" placeholder="Enter password" style="width: 150px" required>
+      </div>
+      <button class="btn" type="submit">Submit</button>
+    </form>
+  </body>
+</html>

@@ -27,19 +27,57 @@ const generateRandomString = require('./my_modules/random-stringer.js');
 /* :::::::: GET REQUESTS ::::::: */
 /* ::::::::::::::::::::::::::::: */
 
+// Render index
 app.get("/", (req, res) => {
   res.end("Hello!");
 });
 
+// Render registration endpoint
+app.get("/register", (req, res) => {
+  if (users[req.session.user_id]) {
+    res.redirect("/urls");
+  } else {
+    res.render("register");
+  }
+});
+
+// Render login endpoint
+app.get("/login", (req, res) => {
+  if (users[req.session.user_id]) {
+    res.redirect("/urls");
+  } else {
+    res.render("login");
+  }
+});
+
+// Render urls_index endpoint
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
-  res.render("urls_index", templateVars);
+  if (users[req.session.user_id]) {
+    let templateVars = {
+      urls: urlDatabase,
+      user_id: users[req.session.user_id],
+      email: users[req.session.user_id].email
+    };
+    res.render("urls_index", templateVars);
+  } else {
+    res.redirect("/login");
+  }
 });
 
+// Render urls_new endpoint
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  if (users[req.session.user_id]) {
+    let templateVars = {
+      user_id: users[req.session.user_id],
+      email: users[req.session.user_id].email
+    };
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/login");
+  }
 });
 
+// Redirect shorturls to its external website
 app.get("/u/:shortURL", (req, res) => {
   if (!urlDatabase[req.params.shortURL]) {
     res.send("Invalid link");
@@ -49,6 +87,7 @@ app.get("/u/:shortURL", (req, res) => {
   }
 });
 
+// Render urls/:id endpoint
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
@@ -60,25 +99,63 @@ app.get("/urls/:id", (req, res) => {
 /* ::::::::::::::::::::::::::::: */
 /* ::::::: POST REQUESTS ::::::: */
 /* ::::::::::::::::::::::::::::: */
-app.post("/urls", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+
+// Submit registration form data and receive cookie from server
+app.post("/register", (req, res) => {
+  for (let key in users) {
+    if (users[key].email === req.body.email) {
+      res.status(404).send("User email is already registered");
+
+    } else {
+      let id = generateRandomString();
+        users[id] = {
+        id: id,
+        email: req.body.email,
+        password: req.body.password
+      };
+
+      if (!users[id].email || !users[id].password) {
+        res.status(404).send("Invalid email or password");
+        return;
+      }
+
+      req.session.user_id = id;
+      res.redirect("/urls");
+      return;
+    }
+  }
 });
 
+// Allow user to login and receive cookie from server
 app.post("/login", (req, res) => {
-  req.session.user_id = req.params.body;
-  res.send("ok");
-  return;
+  let foundUser = false;
+  for (let key in users) {
+    if (users[key].email === req.body.email) {
+      foundUser = key;
+    }
+  }
+  if (foundUser) {
+    if (req.body.password === users[foundUser].password) {
+      req.session.user_id = foundUser;
+      res.redirect("/");
+    } else {
+      res.status(403).send("Invaid password");
+    }
+  } else {
+    res.status(403).send("Email is not registered");
+  }
 });
 
+// Allow user to logout and clear cookie from server
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect("/urls");
 });
 
-// Indicate port for the server to listen on
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+// Allow user to create a shorturl to server
+app.post("/urls", (req, res) => {
+  console.log(req.body);  // debug statement to see POST parameters
+  res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
 /* ::::::::::::::::::::::::::::: */
@@ -89,4 +166,9 @@ app.listen(PORT, () => {
 app.delete("/urls/:id", (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect("/urls");
+});
+
+// Indicate port for the server to listen on
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
 });
