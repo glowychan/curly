@@ -18,6 +18,8 @@ app.use(cookieSession({
   keys: ['user_id']
 }));
 
+const bcrypt = require('bcrypt');
+
 // Require my modules
 const generateRandomString = require('./my_modules/random-stringer.js');
 const users = require('./my_modules/users-database.js');
@@ -122,7 +124,7 @@ app.post("/register", (req, res) => {
         users[id] = {
         id: id,
         email: req.body.email,
-        password: req.body.password
+        password: bcrypt.hashSync(req.body.password, 10)
       };
 
       if (!users[id].email || !users[id].password) {
@@ -146,7 +148,7 @@ app.post("/login", (req, res) => {
     }
   }
   if (foundUser) {
-    if (req.body.password === users[foundUser].password) {
+    if (bcrypt.compareSync(req.body.password, users[foundUser].password)) {
       req.session.user_id = foundUser;
       res.redirect("/");
     } else {
