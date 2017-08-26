@@ -180,6 +180,32 @@ app.post("/urls", (req, res) => {
 });
 
 /* ::::::::::::::::::::::::::::: */
+/* :::::::: PUT REQUESTS ::::::: */
+/* ::::::::::::::::::::::::::::: */
+
+// Allow user to update a shorturl's external website on server
+app.put("/urls/:id/", (req, res) => {
+  if (users[req.session.user_id].id === urlDatabase[req.params.id].userID) {
+
+    if (req.body.longURL.includes('http://')) {
+      urlDatabase[req.params.id] = {
+        longURL: req.body.longURL,
+        userID: users[req.session.user_id].id,
+        views: 0,
+        visitors: []
+      };
+      res.redirect("/urls");
+    } else {
+      res.send("Invalid link");
+    }
+
+  } else {
+    res.send("Cannot edit");
+  }
+});
+
+
+/* ::::::::::::::::::::::::::::: */
 /* :::::: DELETE REQUESTS :::::: */
 /* ::::::::::::::::::::::::::::: */
 
