@@ -15,7 +15,7 @@ app.use(methodOverride('_method'));
 
 const cookieSession = require('cookie-session');
 app.use(cookieSession({
-  keys: ['user_id']
+  keys: ['user_id', 'views', 'visitors']
 }));
 
 const bcrypt = require('bcrypt');
@@ -86,8 +86,16 @@ app.get("/u/:shortURL", (req, res) => {
     res.send("Invalid link");
   } else {
     let longURL = urlDatabase[req.params.shortURL].longURL;
+    let visitors = urlDatabase[req.params.shortURL].visitors;
+    urlDatabase[req.params.shortURL].views++;
+
+    if (visitors.includes(req.session.user_id) === false) {
+      visitors.push(req.session.user_id);
+  }
     res.redirect(longURL);
   }
+  req.session.views = urlDatabase[req.params.shortURL].views;
+  req.session.visitors = urlDatabase[req.params.shortURL].visitors.length;
 });
 
 // Render urls/:id endpoint
@@ -99,6 +107,8 @@ app.get("/urls/:id", (req, res) => {
       longURL: urlDatabase[req.params.id],
       user_id: users[req.session.user_id],
       email: users[req.session.user_id].email,
+      views: urlDatabase[req.params.id].views,
+      visitors: urlDatabase[req.params.id].visitors.length
     };
     res.render("urls_show", templateVars);
     } else {
@@ -205,7 +215,6 @@ app.put("/urls/:id/", (req, res) => {
     res.send("Cannot edit");
   }
 });
-
 
 /* ::::::::::::::::::::::::::::: */
 /* :::::: DELETE REQUESTS :::::: */
