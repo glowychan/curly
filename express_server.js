@@ -92,6 +92,7 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id],
+    email: users[req.session.user_id].email
   };
   res.render("urls_show", templateVars);
 });
@@ -154,8 +155,18 @@ app.post("/logout", (req, res) => {
 
 // Allow user to create a shorturl to server
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  if (req.body.longURL.includes('http://')) {
+    let shortURL = generateRandomString();
+    urlDatabase[shortURL] = {
+      longURL: req.body.longURL,
+      userID: users[req.session.user_id].id,
+      views: 0,
+      visitors: []
+    }
+   res.redirect(`/urls/${shortURL}`);
+  } else {
+    res.send("Invalid link");
+  }
 });
 
 /* ::::::::::::::::::::::::::::: */
