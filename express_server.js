@@ -19,9 +19,10 @@ app.use(cookieSession({
 }));
 
 // Require my modules
-const urlDatabase = require('./my_modules/url-database.js');
-const users = require('./my_modules/users-database.js');
 const generateRandomString = require('./my_modules/random-stringer.js');
+const users = require('./my_modules/users-database.js');
+const urlDatabase = require('./my_modules/url-database.js');
+const urlsForUser = require('./my_modules/user-urls.js');
 
 /* ::::::::::::::::::::::::::::: */
 /* :::::::: GET REQUESTS ::::::: */
@@ -54,7 +55,7 @@ app.get("/login", (req, res) => {
 app.get("/urls", (req, res) => {
   if (users[req.session.user_id]) {
     let templateVars = {
-      urls: urlDatabase,
+      urls: urlsForUser(users[req.session.user_id].id),
       user_id: users[req.session.user_id],
       email: users[req.session.user_id].email
     };
@@ -89,12 +90,21 @@ app.get("/u/:shortURL", (req, res) => {
 
 // Render urls/:id endpoint
 app.get("/urls/:id", (req, res) => {
-  let templateVars = {
-    shortURL: req.params.id,
-    longURL: urlDatabase[req.params.id],
-    email: users[req.session.user_id].email
-  };
-  res.render("urls_show", templateVars);
+  if (users[req.session.user_id]) {
+    if (users[req.session.user_id].id === urlDatabase[req.params.id].userID) {
+      let templateVars = {
+      shortURL: req.params.id,
+      longURL: urlDatabase[req.params.id],
+      user_id: users[req.session.user_id],
+      email: users[req.session.user_id].email,
+    };
+    res.render("urls_show", templateVars);
+    } else {
+      res.send("Link does not belong to user");
+    }
+  } else {
+    res.redirect("/login");
+  }
 });
 
 /* ::::::::::::::::::::::::::::: */
