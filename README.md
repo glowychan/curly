@@ -3,7 +3,7 @@
 A web application created with Node and Express that allows users to shorten their urls.
 
 ## Final product
-!["Screenshot of main urls page"](https://github.com/glowychan/tinyapp/blob/master/docs/urls-page.png)
+!["Screenshot of main urls page"](https://github.com/glowychan/curly/blob/master/01.png)
 
 ## Dependencies
 
