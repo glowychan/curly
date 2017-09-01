@@ -2,13 +2,51 @@
 <html lang="en">
   <head>
     <% include partials/_head %>
+    <style>
+      .container {
+        width: 960px;
+      }
+
+      .jumbotron {
+        position: relative;
+        background: #0d98ba url("https://github.com/glowychan/curly/blob/styling/views/bg.jpg?raw=true");
+        border-radius: 50% !important;
+        color: #fff;
+        margin: 120px auto;
+        width: 80%;
+        height: 80%;
+        background-size: cover;
+        overflow: hidden;
+        padding: 250px;
+        text-align: center;
+        z-index: 1;
+      }
+
+      .jumbotron p {
+        color: #007ba7;
+      }
+
+      .input-group {
+        margin: auto;
+        width: 80%;
+      }
+
+      .input-group input {
+        width: 100%;
+        height: 40px;
+      }
+
+      .input-group .btn {
+        height: 40px;
+      }
+    </style>
   </head>
   <body>
     <% include partials/_header %>
     <div class="container">
-      <div class="jumbotron">
+      <div class="jumbotron jumbotron-fluid">
         <h1>Sh<i class="fa fa-search" aria-hidden="true"></i>rten your URLs</h1>
-        <p>Share and measure your links with the world.</p>
+        <p>Share your links with the world.</p>
         <form action="/urls" method="POST">
           <div class="input-group">
             <input id="longURL" type="text" name="longURL" placeholder="http://">
